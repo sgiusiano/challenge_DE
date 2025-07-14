@@ -1,0 +1,5 @@
+PyYAML
+psycopg2-binary
+pymongo
+pandas
+SQLAlchemy

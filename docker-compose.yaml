@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    environment:      
+      POSTGRES_DB: challenge
+      POSTGRES_USER: santiagoarielgiusiano
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U santiagoarielgiusiano -d challenge"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: postgres -c log_min_messages=WARNING
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: mongod --quiet --logpath /dev/null
+ 
+  app:
+    build: .
+    container_name: etl_pipeline_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+  jupyter:
+    image: jupyter/datascience-notebook:latest
+    container_name: analytics_jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/notebooks
+
+volumes:
+  postgres_data:
+  mongo_data:
