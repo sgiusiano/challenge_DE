@@ -2,3 +2,5 @@
 .env
 .ipynb_checkpoints
 __pycache__
+.venv
+.python-version

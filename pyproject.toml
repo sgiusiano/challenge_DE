@@ -1,0 +1,25 @@
+[project]
+name = "challenge-de"
+version = "0.1.0"
+description = "ETL Pipeline for Document Event Logs"
+requires-python = ">=3.10"
+dependencies = [
+    "psycopg2-binary",
+    "pymongo",
+    "pandas",
+    "sqlalchemy",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.backends"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.ruff.format]
+quote-style = "double"

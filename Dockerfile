@@ -1,17 +1,13 @@
-# Usar una imagen base oficial de Python
 FROM python:3.10
 
-# Establecer el directorio de trabajo en el contenedor
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 WORKDIR /app
 
-# Copiar el archivo de requerimientos
-COPY requirements.txt .
+COPY pyproject.toml uv.lock ./
 
-# Instalar las dependencias
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv sync --frozen --no-dev
 
-# Copiar el resto del código de la aplicación
 COPY . .
 
-# Definir el comando para ejecutar la aplicación
-CMD ["python", "main.py"]
+CMD ["uv", "run", "python", "main.py"]
